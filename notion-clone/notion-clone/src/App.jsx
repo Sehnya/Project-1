@@ -1,34 +1,41 @@
-import { useState } from "react";
-import Block from "./components/Block";
+import React, { useState, useEffect } from 'react';
+import UserForm from './components/UserForm.jsx';
+import UserList from './components/UserList.jsx';
+import { createUser, readUsers, updateUser, deleteUser } from './api';
 
 export default function App() {
-  const [blocks, setBlocks] = useState([
-    { id: 1, type: "text", content: "Type something here..." },
-  ]);
+  const [users, setUsers] = useState([]);
+  const [editingUser, setEditingUser] = useState(null);
 
-  const addBlock = () => {
-    setBlocks([...blocks, { id: Date.now(), type: "text", content: "" }]);
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const users = await readUsers();
+      setUsers(Array.isArray(users) ? users : []);
+    };
+    fetchUsers();
+  }, []);
+
+  const handleCreateOrUpdateUser = async (user) => {
+    if (editingUser) {
+      const updatedUser = await updateUser(editingUser.id, user);
+      setUsers(users.map((u) => (u.id === updatedUser.id ? updatedUser : u)));
+      setEditingUser(null);
+    } else {
+      const newUser = await createUser(user);
+      setUsers([...users, newUser]);
+    }
   };
 
-  const updateBlock = (id, newContent) => {
-    setBlocks(blocks.map(block => (block.id === id ? { ...block, content: newContent } : block)));
-  };
-
-  const deleteBlock = (id) => {
-    setBlocks(blocks.filter(block => block.id !== id));
+  const handleDeleteUser = async (id) => {
+    await deleteUser(id);
+    setUsers(users.filter((user) => user.id !== id));
   };
 
   return (
-    <div className="min-h-screen p-5 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Notion Clone</h1>
-      <button className="mb-4 px-4 py-2 bg-blue-500 text-white rounded" onClick={addBlock}>
-        Add Block
-      </button>
-      <div className="bg-white p-4 rounded shadow">
-        {blocks.map(block => (
-          <Block key={block.id} block={block} onUpdate={updateBlock} onDelete={deleteBlock} />
-        ))}
-      </div>
+    <div>
+      <h1>User Management</h1>
+      <UserForm onSubmit={handleCreateOrUpdateUser} initialData={editingUser} />
+      <UserList users={users} onUpdate={setEditingUser} onDelete={handleDeleteUser} />
     </div>
   );
 }
