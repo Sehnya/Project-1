@@ -1,3 +1,1 @@
-# Project-1
-
-creating my own version of Notion.
+// Will contain information for the app.
