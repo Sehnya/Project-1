@@ -1,11 +1,13 @@
-console.log("main.jsx executed");
 import React from 'react';
-import ReactDOM from 'react-dom/client'; // Correct import for React 18
-import Workspace from './components/Workspace';
+import ReactDOM from 'react-dom/client';
+import App from './App'; // You'll create an App component next
+import { AuthProvider } from './AuthContext'; // Import the provider
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <React.StrictMode>
-        <Workspace />
-    </React.StrictMode>
+  <React.StrictMode>
+    <AuthProvider>
+      <App />
+    </AuthProvider>
+  </React.StrictMode>
 );
