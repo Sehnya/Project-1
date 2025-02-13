@@ -1,0 +1,24 @@
+{
+    "indexes": [
+      {
+        "collectionGroup": "nodes", 
+        "queryScope": "COLLECTION",
+        "fields": [
+          {
+            "fieldPath": "nodeProp",
+            "arrayConfig": "CONTAINS" 
+          }
+        ]
+      },
+      {
+        "collectionGroup": "nodes", 
+        "queryScope": "COLLECTION",
+        "fields": [
+          {
+            "fieldPath": "nodeStyle.color", 
+            "order": "ASCENDING" 
+          }
+        ]
+      }
+    ]
+  }
